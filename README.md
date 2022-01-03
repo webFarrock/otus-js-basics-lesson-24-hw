@@ -1,7 +1,5 @@
 # Домашнее задание курса [OTUS JS Basics](https://otus.ru/lessons/javascript-basic/) - Реализация типовых задач с использованием OOП / ФП с покрытием кода тестами
 
-Демо: [https://webfarrock.github.io/otus-js-basics-lesson-24-hw/](https://webfarrock.github.io/otus-js-basics-lesson-24-hw/)
-
 ## Основные команды
 ### Build
 ```js
