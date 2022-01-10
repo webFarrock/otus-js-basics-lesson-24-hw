@@ -4,31 +4,31 @@ interface iJob {
 export class Parallel {
   result: number[] = [];
 
-  protected activeJobs = 0;
-
   constructor(protected queueMaxSize: number) {}
 
   async jobs(...inputJobs: iJob[]): Promise<number[]> {
-    const totalJobs = inputJobs.length;
+    const jobs = [...inputJobs];
+    const totalJobs = jobs.length;
 
     return new Promise((resolve) => {
-      const interval = setInterval(() => {
-        if (inputJobs.length && this.activeJobs < this.queueMaxSize) {
-          const job = inputJobs.shift() as iJob;
+      const run = () => {
+        const job = jobs.shift();
 
-          this.activeJobs += 1;
+        if (job) {
+          job().then((value: number): void => {
+            this.result.push(value);
+            if (this.result.length === totalJobs) {
+              return resolve(this.result);
+            }
 
-          job().then((result) => {
-            this.result.push(result);
-            this.activeJobs -= 1;
+            run();
           });
         }
+      };
 
-        if (this.result.length >= totalJobs) {
-          clearInterval(interval);
-          resolve(this.result);
-        }
-      }, 1);
+      for (let i = 0; i < this.queueMaxSize; i++) {
+        run();
+      }
     });
   }
 }
