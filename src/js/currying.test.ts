@@ -1,8 +1,8 @@
-import { currying, iFnForCurrying } from "./currying";
+import { currying } from "./currying";
 
 describe("curring", () => {
   it("check curring", () => {
-    const func: iFnForCurrying = (a, b, c, d, e) => a + b + c + d + e;
+    const func = (a: number, b: number, c: number, d: number, e: number) => a + b + c + d + e;
     const hof = currying(func);
 
     expect(hof(1, 2, 3, 4, 5)).toEqual(15);

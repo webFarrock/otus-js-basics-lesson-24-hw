@@ -1,13 +1,21 @@
-export interface iCurrying {
-  (...args: any[]): iCurrying | iFnForCurrying;
-}
+type RemainingParameters<Provided extends any[], Expected extends any[]> = Expected extends [infer E1, ...infer EX]
+  ? Provided extends [infer P1, ...infer PX]
+    ? RemainingParameters<PX, EX>
+    : Expected
+  : [];
 
-export interface iFnForCurrying {
-  (...args: any[]): any;
-}
+type Curry<Fn extends (...args: any[]) => any, Expected extends any[] = Parameters<Fn>, RType = ReturnType<Fn>> = <
+  Provided extends Partial<Expected>
+>(
+  ...args: Provided
+) => RemainingParameters<Provided, Expected> extends []
+  ? RType
+  : Curry<Fn, RemainingParameters<Provided, Expected>, RType>;
 
-export const currying = (fn: iFnForCurrying): iCurrying => {
-  return function curried(...args: any[]): iCurrying | iFnForCurrying {
+export function currying<Fn extends (...args: any[]) => any>(func: Fn): Curry<Fn>;
+
+export function currying(fn: (...args: any[]) => any): any {
+  return function curried(...args: any[]) {
     if (args.length >= fn.length) {
       return fn(...args);
     } else {
@@ -16,4 +24,4 @@ export const currying = (fn: iFnForCurrying): iCurrying => {
       };
     }
   };
-};
+}
